@@ -9,7 +9,7 @@
 # название которого введено с клавиатуры; если такого магазина нет, выдать на дисплей
 # соответствующее сообщение.
 
-# Решить индивидуальное задание 2 лабораторной работы 9, оформив каждую команду в виде
+# Решить индивидуальное задание лабораторной работы 8, оформив каждую команду в виде
 # отдельной функции.
 
 
@@ -59,27 +59,15 @@ def list(markets):
         print(line)
 
 
-def select(markets):
+def select(markets, period):
+    result = []
+    number = str(parts[1])
     count = 0
     for market in markets:
-        if market.get('shop') == sel:
+        if market.get('shop') == number:
             count += 1
-            print('Название магазина', markets.get('shop', ''))
-            print('Название товара:', markets.get('product', ''))
-            print('Стоимость в руб.:', markets.get('price', ''))
 
-    if count == 0:
-        print("Продукт не найден.")
-
-
-def load(parts):
-    with open(parts, 'r') as f:
-        return markets
-
-
-def save(markets, parts):
-    with open(parts, 'w') as f:
-        json.dump(markets, f)
+    return result
 
 
 if __name__ == '__main__':
@@ -103,18 +91,31 @@ if __name__ == '__main__':
             print(list(markets))
 
         elif command.startswith('select '):
-            parts = command.split(' ', maxsplit=2)
+            parts = command.split(' ', maxsplit=1)
+            selected = select(markets, str(parts[1]))
 
-            sel = (parts[1])
-            select(markets)
+            if selected:
+                for count, markets in enumerate(selected, 1):
+                    print(
+                        '{:>4}: {}'.format(count, markets.get('shop', ''))
+                    )
+            else:
+                print("Товар не найден.")
+
 
         elif command.startswith('load '):
+            # Разбить команду на части для выделения имени файла.
             parts = command.split(' ', maxsplit=1)
-            markets = load(parts[1])
+            # Прочитать данные из файла JSON.
+            with open(parts[1], 'r') as f:
+                market = json.load(f)
 
         elif command.startswith('save '):
+            # Разбить команду на части для выделения имени файла.
             parts = command.split(' ', maxsplit=1)
-            save(markets, parts[1])
+            # Сохранить данные в файл JSON.
+            with open(parts[1], 'w') as f:
+                json.dump(market, f)
 
         elif command == 'help':
             print("Список команд:\n")
