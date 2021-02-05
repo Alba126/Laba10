@@ -58,17 +58,15 @@ def list(markets):
         print(line)
 
 
-def select(markets):
+def select(markets, period):
+    result = []
+    number = str(parts[1])
     count = 0
     for market in markets:
-        if market.get('shop') == sel:
+        if market.get('shop') == number:
             count += 1
-            print('Название магазина', markets.get('shop', ''))
-            print('Название товара:', markets.get('product', ''))
-            print('Стоимость в руб.:', markets.get('price', ''))
 
-    if count == 0:
-        print("Продукт не найден.")
+    return result
 
 
 if __name__ == '__main__':
@@ -92,10 +90,16 @@ if __name__ == '__main__':
             print(list(markets))
 
         elif command.startswith('select '):
-            parts = command.split(' ', maxsplit=2)
+            parts = command.split(' ', maxsplit=1)
+            selected = select(markets, str(parts[1]))
 
-            sel = (parts[1])
-            select(markets)
+            if selected:
+                for count, markets in enumerate(selected, 1):
+                    print(
+                        '{:>4}: {}'.format(count, markets.get('shop', ''))
+                    )
+            else:
+                print("Товар не найден.")
 
         elif command == 'help':
             print("Список команд:\n")
